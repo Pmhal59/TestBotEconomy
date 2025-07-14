@@ -2292,6 +2292,53 @@ async def removegems(interaction: discord.Interaction, user: discord.Member, gem
     embed.set_footer(text=f"Command executed by: {interaction.user.name}")
     await interaction.response.send_message(embed=embed)
 
+@bot.tree.command(name="help", description="📚 Show a list of all available commands.")
+async def help(interaction: discord.Interaction):
+    embed = discord.Embed(
+        title="📚 Help Desk",
+        description="Here's a list of all the commands you can use with the bot:",
+        color=0x2eb9ff
+    )
+
+    embed.add_field(
+        name="🎲 Games",
+        value="`/flip` - Challenge another user to a coinflip.\n"
+              "`/towers` - Climb the towers and multiply your bet.\n"
+              "`/mines` - Test your luck in a game of mines.\n"
+              "`/keno` - Play a thrilling game of Keno.\n"
+              "`/dice` - Roll a dice against the bot and test your luck.\n"
+              "`/threedice` - Bet on the sum of three dice.\n"
+              "`/upgrader` - Upgrade your gems for a chance at huge multipliers.\n"
+              "`/cases` - View all available cases to unbox.\n"
+              "`/unbox-case` - Open a case for a chance to win big.\n"
+              "`/unbox-multiple-cases` - Open multiple cases at once.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="💰 Currency",
+        value="`/register` - Register to start your epic gambling adventure.\n"
+              "`/balance` - Check your gem balance and gambling stats.\n"
+              "`/deposit` - Deposit gems to fuel your gambling passion.\n"
+              "`/withdraw` - Withdraw your gems to your in-game account.\n"
+              "`/tip` - Generously send gems to another user.\n"
+              "`/rakeback` - Check your available rakeback.\n"
+              "`/claim-rakeback` - Claim your hard-earned rakeback.\n"
+              "`/leaderboard` - See who's ruling the gambling world.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="🤝 General",
+        value="`/affiliate` - Affiliate with another user and earn rewards.\n"
+              "`/set_crash_join_amount` - Set your default bet for crash games.\n"
+              "`/help` - Show a list of all available commands.",
+        inline=False
+    )
+
+    embed.set_footer(text="Use these commands to navigate the bot and enjoy your gambling experience! 🎰")
+    await interaction.response.send_message(embed=embed)
+
 from multiprocessing import Process
 
 def start_bot():
