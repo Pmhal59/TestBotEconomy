@@ -420,7 +420,7 @@ class CashoutCrash(discord.ui.View) :
             if player[0] == uid :
                 ingame = True
         if not ingame :
-            await interaction.response.send_message(content="You Are Not In This Game", ephemeral=True)
+            await interaction.response.send_message(content="🤔 You're not in this game, so you can't cash out!", ephemeral=True)
         if ingame :
             M = crash_info["multi"]
             bet = 0
@@ -428,7 +428,7 @@ class CashoutCrash(discord.ui.View) :
                 if player[0] == uid :
                     bet = player[1]
             winnings = round(bet * M) / 1.05
-            await interaction.response.send_message(content=f"Cashed Out At {M}x! You got {add_suffix(winnings)}",
+            await interaction.response.send_message(content=f"🎉 Cashed out at {M}x! You won {add_suffix(winnings)} gems! 💎",
                                                     ephemeral=True)
             for player in crash_info["players"] :
                 if player[0] == uid :
@@ -456,23 +456,23 @@ class JoinCrash(discord.ui.View) :
                 if player[0] == uid :
                     ingame = True
             if not ingame :
-                await interaction.response.send_message(content="Joined Game", ephemeral=True)
+                await interaction.response.send_message(content="✅ You have successfully joined the crash game!", ephemeral=True)
                 subtract_gems(uid, get_crash_join_amount(uid))
                 crash_info['players'].append([uid, get_crash_join_amount(uid), interaction.user.name])
                 cstr = ""
                 for player in crash_info['players'] :
-                    cstr += f":gem: **{player[2]}** - ``{add_suffix(player[1])}``\n"
-                embed = discord.Embed(title=":rocket: A Game Of Crash Is Starting",
-                                      description="Press The Button To Join", color=0xff9861)
-                embed.add_field(name="Game", value=f":clock1: **Starts:** <t:{crash_info['start']}:R>")
+                    cstr += f"💎 **{player[2]}** - `{add_suffix(player[1])}`\n"
+                embed = discord.Embed(title="🚀 A Game Of Crash Is Starting",
+                                      description="Press the button to join the action!", color=0xff9861)
+                embed.add_field(name="⏰ Game Details", value=f"**Starts:** <t:{crash_info['start']}:R>")
                 embed.set_author(name="Gambling Bot")
-                embed.add_field(name="Bets", value=cstr)
+                embed.add_field(name="💰 Bets", value=cstr)
                 await crash_info["msg"].edit(embed=embed, view=self)
             else :
-                await interaction.response.send_message(content="You Have Already Joined This Game", ephemeral=True)
+                await interaction.response.send_message(content="🤔 You have already joined this game!", ephemeral=True)
         else :
             await interaction.response.send_message(
-                content="You Cannot Afford This Bet! Do /set-crash-join-amount to change your default bet",
+                content="🚫 You can't afford this bet! Use `/set-crash-join-amount` to change your default bet.",
                 ephemeral=True)
 
 
@@ -534,25 +534,25 @@ async def on_ready() :
     print(f"Synced {len(synced)} command(s)")
 
 
-@bot.tree.command(name="register", description="Register To Start Gambling!")
+@bot.tree.command(name="register", description="🎉 Register to start your epic gambling adventure!")
 async def register(interaction: discord.Interaction) :
     if not is_registered(str(interaction.user.id)) :
         register_user(str(interaction.user.id))
-        await log(f"<@{interaction.user.id}> Registered")
-        embed = discord.Embed(title=":white_check_mark: Registered User",
-                              description=":gem: You Can Now Deposit, Withdraw And Gamble Your Gems! Have Fun!",
+        await log(f"✅ <@{interaction.user.id}> successfully registered!")
+        embed = discord.Embed(title="🎉 Welcome to the Club!",
+                              description="You're all set to deposit, withdraw, and gamble your gems! 💎\nMay the odds be ever in your favor! 🍀",
                               color=0x00ff33)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/register")
+        embed.set_footer(text="Let the games begin! 🚀")
         await interaction.response.send_message(embed=embed)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Already Registered!",
+        embed = discord.Embed(title="🤔 Already a Member?",
+                              description="It looks like you're already registered! No need to sign up again. 😉",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/register")
+        embed.set_footer(text="Time to gamble! 🎰")
         await interaction.response.send_message(embed=embed)
 
 class DepositButtons(discord.ui.View) :
@@ -573,7 +573,7 @@ class DepositButtons(discord.ui.View) :
         await interaction.response.send_message(content=self.username,ephemeral=True)
     async def button_code(self, interaction: discord.Interaction):
         await interaction.response.send_message(content=self.message, ephemeral=True)
-@bot.tree.command(name="deposit", description="Deposit Some Gems To Gamble")
+@bot.tree.command(name="deposit", description="💰 Deposit gems to fuel your gambling passion!")
 async def deposit(interaction: discord.Interaction) :
     global codes
     if is_registered(str(interaction.user.id)) :
@@ -583,27 +583,31 @@ async def deposit(interaction: discord.Interaction) :
 
         add_code([str(interaction.user.id), code])
         print(get_codes())
-        embed = discord.Embed(title=":gem: Deposit",
-                              description=f"",
+        embed = discord.Embed(title="💎 Deposit Your Gems!",
+                              description="Follow these simple steps to add gems to your account:",
                               color=0x2eb9ff)
-        embed.add_field(name="Mailbox",
-                        value=f":keyboard: **Username:** ``{username}``\n:speech_balloon: **Message:** ``{code}``\n:gem: **Gems:** ``Any``\n**MAKE SURE YOUR CODE ISN'T CENSORED TYPE IT OUT IN CHAT**")
+        embed.add_field(name="📬 Mailbox Instructions",
+                        value=f"1️⃣ **Username:** `{username}`\n"
+                              f"2️⃣ **Message:** `{code}`\n"
+                              f"3️⃣ **Gems:** `Any Amount`\n\n"
+                              f"**⚠️ IMPORTANT:** Make sure your code isn't censored. Type it in chat to verify!",
+                        inline=False)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/deposit")
+        embed.set_footer(text="Happy gambling! 🍀")
         await interaction.response.send_message(embed=embed,view=DepositButtons(username=username,message=code))
 
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register before you can deposit gems. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/deposit")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="balance", description="View Your Gem Balance")
+@bot.tree.command(name="balance", description="💰 Check your gem balance and gambling stats!")
 async def info(interaction: discord.Interaction) :
     if is_registered(str(interaction.user.id)) :
         gems = get_gems(str(interaction.user.id))
@@ -620,50 +624,61 @@ async def info(interaction: discord.Interaction) :
 
         twagered = calculate_total_wagered(interaction.user.id)
 
-        embed = discord.Embed(title=f":gem: Stats Of {interaction.user.name}",
-                              description=f"",
+        embed = discord.Embed(title=f"📊 Stats for {interaction.user.name}",
+                              description="Here's a summary of your gambling journey so far:",
                               color=0x2eb9ff)
-        if not get_affiliate(str(interaction.user.id)) :
-            embed.add_field(name=f"Stats",
-                            value=f"\n\n:gem: **Gems:** ``{gems_formatted}``\n:gem: **Total Wagered:** ``{add_suffix(twagered)}`` (in works)\n:rocket: **Affiliated To:** ``None``")
+
+        affiliated_to = get_affiliate(str(interaction.user.id))
+        if not affiliated_to :
+            affiliated_status = "🤝 **Affiliated To:** `None`"
         else :
-            embed.add_field(name=f"Stats",
-                            value=f"\n\n:gem: **Gems:** ``{gems_formatted}``\n:gem: **Total Wagered:** ``{add_suffix(twagered)}`` (in works)\n:rocket: **Affiliated To:** <@{get_affiliate(str(interaction.user.id))}>")
-        embed.set_author(name="",
-                         icon_url="https://cdn.discordapp.com/avatars/1134495235473428561/d0ac341d640fca84c1657d0852d105ef.png?size=1024")
-        embed.set_footer(text="/balance")
+            affiliated_status = f"🤝 **Affiliated To:** <@{affiliated_to}>"
+
+        embed.add_field(name="💰 Account Details",
+                        value=f"💎 **Gems:** `{gems_formatted}`\n"
+                              f"💸 **Total Wagered:** `{add_suffix(twagered)}` (in works)\n"
+                              f"{affiliated_status}",
+                        inline=False)
+
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Keep on gambling! 🎰")
         await interaction.response.send_message(embed=embed)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to view your balance. Use `/register` to get started! 🚀",
                               color=0xff0000)
-        embed.set_author(name="",
-                         icon_url="https://cdn.discordapp.com/avatars/1134495235473428561/d0ac341d640fca84c1657d0852d105ef.png?size=1024")
-        embed.set_footer(text="/balance")
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="rakeback", description="View Your Rakeback")
+@bot.tree.command(name="rakeback", description="🤑 Check your available rakeback!")
 async def rake(interaction: discord.Interaction) :
     uid = str(interaction.user.id)
     if is_registered(str(interaction.user.id)) :
         rake_back = get_rake_back(uid)
 
-        embed = discord.Embed(title=f":moneybag: Rakeback",
-                              description=f"You Currently Have :gem: ``{add_suffix(rake_back)}`` Sitting In Rake Back.\nDo /claim-rakeback To Claim It",
+        embed = discord.Embed(title="💰 Your Rakeback",
+                              description=f"You currently have **{add_suffix(rake_back)}** gems 💎 waiting for you in rakeback.\n"
+                                          f"Use `/claim-rakeback` to collect your rewards! 💸",
                               color=0xffad1f)
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Keep playing to earn more rakeback! 🎮")
         await interaction.response.send_message(embed=embed)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to check your rakeback. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="rakeback")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="claim-rakeback", description="View Your Rakeback")
+@bot.tree.command(name="claim-rakeback", description="💸 Claim your hard-earned rakeback!")
 async def claimrake(interaction: discord.Interaction) :
     uid = str(interaction.user.id)
     if is_registered(str(interaction.user.id)) :
@@ -671,30 +686,33 @@ async def claimrake(interaction: discord.Interaction) :
         if rake_back > 0 :
             set_rake_back(uid, 0)
             add_gems(uid, rake_back)
-            await log(f"<@{uid}> Claimed {add_suffix(rake_back)} Rakeback")
-            embed = discord.Embed(title=f":white_check_mark: Claimed Rakeback",
-                                  description=f"You Claimed :gem: ``{add_suffix(rake_back)}``",
+            await log(f"💸 <@{uid}> claimed {add_suffix(rake_back)} rakeback!")
+            embed = discord.Embed(title="✅ Rakeback Claimed!",
+                                  description=f"You've successfully claimed **{add_suffix(rake_back)}** gems! 💎",
                                   color=0x88ff70)
+            embed.set_author(name="Pet Sim 99 Gamble Bot",
+                             icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+            embed.set_footer(text="Enjoy your rewards! 🎉")
             await interaction.response.send_message(embed=embed)
         else :
-            embed = discord.Embed(title=":x: Error",
-                                  description="You Dont Have Anything To Claim!",
+            embed = discord.Embed(title="🤔 Nothing to Claim",
+                                  description="You don't have any rakeback to claim at the moment. Keep playing to earn more! 🎮",
                                   color=0xff0000)
             embed.set_author(name="Pet Sim 99 Gamble Bot",
                              icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-            embed.set_footer(text="rakeback")
+            embed.set_footer(text="Happy gambling! 🍀")
             await interaction.response.send_message(embed=embed)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to claim your rakeback. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="rakeback")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="leaderboard", description="Top 10 Highest Balances")
+@bot.tree.command(name="leaderboard", description="🏆 See who's ruling the gambling world!")
 async def leaderboard(interaction: discord.Interaction):
     guild = interaction.guild
     users = []  # A list to store user data with balances
@@ -707,7 +725,8 @@ async def leaderboard(interaction: discord.Interaction):
     # Sort the users by balance in descending order
     users.sort(key=lambda x: x[1], reverse=True)
 
-    embed = discord.Embed(title=":trophy: Leaderboard - Top 10 Balances",
+    embed = discord.Embed(title="🏆 Top 10 Richest Gamblers",
+                          description="Check out the high rollers of the server!",
                           color=0xffd700)
 
     for i, (member, gems) in enumerate(users[:10], start=1):
@@ -725,80 +744,87 @@ async def leaderboard(interaction: discord.Interaction):
 
         embed.add_field(
             name=f"#{i} - {user_name}",
-            value=f":gem: **Balance:** {gems_formatted}",
+            value=f"💎 **Balance:** {gems_formatted}",
             inline=False
         )
 
+    embed.set_author(name="Pet Sim 99 Gamble Bot",
+                     icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+    embed.set_footer(text="Will you be on the next leaderboard? 🤔")
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="affiliate", description="affiliate someone")
+@bot.tree.command(name="affiliate", description="🤝 Affiliate with another user and earn rewards!")
 async def affiliate(interaction: discord.Interaction, user: discord.Member) :
     uid = str(interaction.user.id)
     cf = get_affiliate(uid)
     if cf :
         if interaction.user.id != 757289489373593661 :
-            embed = discord.Embed(title=":x: Error",
-                                  description="You Are Already Affiliated To Someone!",
+            embed = discord.Embed(title="🤔 Already Affiliated",
+                                  description="You're already affiliated with someone! You can only be affiliated with one user at a time. 🤝",
                                   color=0xff0000)
             embed.set_author(name="Pet Sim 99 Gamble Bot",
                              icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-            embed.set_footer(text="/affiliate")
+            embed.set_footer(text="Choose your allies wisely! 🧐")
             await interaction.response.send_message(embed=embed)
             return
     if not is_registered(uid) :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Arent Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to use the affiliate system. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/affiliate")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if user.id == interaction.user.id :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Cant Affiliate Yourself Bozo!",
+        embed = discord.Embed(title="🤪 Can't Affiliate Yourself!",
+                              description="You can't affiliate with yourself, you silly goose! 😂",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/affiliate")
+        embed.set_footer(text="Choose a friend to affiliate with! 🧑‍🤝‍🧑")
         await interaction.response.send_message(embed=embed)
         return
     set_affiliate(uid, str(user.id))
-    await log(f"<@{uid}> Affiliated <@{user.id}>")
+    await log(f"🤝 <@{uid}> is now affiliated with <@{user.id}>!")
     add_gems(uid, 5000)
-    embed = discord.Embed(title="",
-                          description=f":white_check_mark: You Are Now Affiliated To <@{user.id}>",
+    embed = discord.Embed(title="✅ Affiliate Successful!",
+                          description=f"You are now affiliated with <@{user.id}>! You've received **5,000** gems 💎 as a bonus! 🎉",
                           color=0x98ff61)
+    embed.set_author(name="Pet Sim 99 Gamble Bot",
+                     icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+    embed.set_footer(text="Teamwork makes the dream work! 💪")
     await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="set_crash_join_amount", description="Sets Your Bet For When You Join A Crash Game")
+@bot.tree.command(name="set_crash_join_amount", description="🚀 Set your default bet for crash games!")
 async def crashamount(interaction: discord.Interaction, bet: str) :
     bet = suffix_to_int(bet)
     uid = str(interaction.user.id)
     if is_registered(uid) :
-        embed = discord.Embed(title=":gem: Set Crash Join Amount",
-                              description=f"Your crash join amount has been set to ``{add_suffix(bet)}``, This will now be your bet when you join a game of crash",
+        embed = discord.Embed(title="✅ Crash Bet Updated!",
+                              description=f"Your default crash bet has been set to **{add_suffix(bet)}** gems! 💎\n"
+                                          f"This will be your automatic bet when you join a crash game. 🚀",
                               color=0x2eb9ff)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/balance")
+        embed.set_footer(text="Good luck on your next crash! 💥")
         await interaction.response.send_message(embed=embed)
         set_crash_join(uid, bet)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to set your crash bet. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/crash")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="withdraw", description="Withdraw Gems")
-@app_commands.describe(amount="The Amount Of Gems To Withdraw")
-@app_commands.describe(uname="The Username To Send The Gems To")
+@bot.tree.command(name="withdraw", description="💸 Withdraw your gems to your in-game account!")
+@app_commands.describe(amount="The amount of gems to withdraw")
+@app_commands.describe(uname="The username to send the gems to")
 async def withdraw(interaction: discord.Interaction, amount: str, uname: str) :
     amount = suffix_to_int(amount)
     global withdraws
@@ -822,42 +848,43 @@ async def withdraw(interaction: discord.Interaction, amount: str, uname: str) :
                 oldwithdraws.append({"user": uname, "amount": gems})
                 with open("withdraws.json", "w") as f :
                     f.write(json.dumps(oldwithdraws))
-                embed = discord.Embed(title=":gem: Withdraw",
-                                      description=f"Withdrew {gems_formatted} Gems. It Should Take Around 60s To Recieve The Gems In The Mail On Your Account: {uname}",
+                embed = discord.Embed(title="✅ Withdrawal Successful!",
+                                      description=f"You've withdrawn **{gems_formatted}** gems to **{uname}**! 💎\n"
+                                                  f"Please allow up to 60 seconds for the gems to arrive in your in-game mailbox. 📬",
                                       color=0x2eb9ff)
                 embed.set_author(name="Pet Sim 99 Gamble Bot",
                                  icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-                embed.set_footer(text="/withdraw")
+                embed.set_footer(text="Enjoy your winnings! 🎉")
                 await interaction.response.send_message(embed=embed)
             else :
-                embed = discord.Embed(title=":x: Error",
-                                      description="You Can Only Withdraw Over 20k",
+                embed = discord.Embed(title="🚫 Invalid Amount",
+                                      description="You can only withdraw amounts over 20k gems. Please try again with a larger amount. 💰",
                                       color=0xff0000)
                 embed.set_author(name="Pet Sim 99 Gamble Bot",
                                  icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-                embed.set_footer(text="/withdraw")
+                embed.set_footer(text="Keep saving up! 💪")
                 await interaction.response.send_message(embed=embed)
         else :
-            embed = discord.Embed(title=":x: Error",
-                                  description="You Are Too Poor For This Withdraw xD!",
+            embed = discord.Embed(title="🚫 Insufficient Funds",
+                                  description="You don't have enough gems for this withdrawal. Time to gamble more! 🎰",
                                   color=0xff0000)
             embed.set_author(name="Pet Sim 99 Gamble Bot",
                              icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-            embed.set_footer(text="/withdraw")
+            embed.set_footer(text="Better luck next time! 🍀")
             await interaction.response.send_message(embed=embed)
     else :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to withdraw gems. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/withdraw")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
-@bot.tree.command(name="tip", description="Send Someone Gems")
-@app_commands.describe(user="The User To Send To")
-@app_commands.describe(amount="Amount To Send")
+@bot.tree.command(name="tip", description=" generously send gems to another user!")
+@app_commands.describe(user="The user to send gems to")
+@app_commands.describe(amount="The amount of gems to send")
 async def tip(interaction: discord.Interaction, amount: str, user: discord.Member):
     amount = suffix_to_int(amount)
     if is_registered(str(interaction.user.id)):
@@ -866,7 +893,7 @@ async def tip(interaction: discord.Interaction, amount: str, user: discord.Membe
                 subtract_gems(str(interaction.user.id), amount)
                 time.sleep(0.5)
                 add_gems(str(user.id), amount)
-                await log(f"<@{interaction.user.id}> Tipped {add_suffix(amount)} To <@{user.id}>")
+                await log(f"💸 <@{interaction.user.id}> tipped {add_suffix(amount)} to <@{user.id}>!")
                 gems = amount
                 if gems >= 1000000000000:  # if gems are greater than or equal to 1 trillion
                     gems_formatted = f"{gems / 1000000000000:.1f}t"  # display gems in trillions with one decimal point
@@ -879,14 +906,16 @@ async def tip(interaction: discord.Interaction, amount: str, user: discord.Membe
                 else:  # if gems are less than 1 thousand
                     gems_formatted = str(gems)  # display gems as is
 
-                embed = discord.Embed(title=":gem: Sent Gems",
-                                      description=f"",
+                embed = discord.Embed(title="✅ Tip Successful!",
+                                      description=f"You've generously sent **{gems_formatted}** gems to <@{user.id}>! 💎",
                                       color=0x2eb9ff)
                 embed.set_author(name="Pet Sim 99 Gamble Bot",
                                  icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-                embed.set_footer(text="/tip")
-                embed.add_field(name=":mailbox: Tip",
-                                value=f":outbox_tray: Sender: <@{interaction.user.id}>\n:inbox_tray: Receiver: <@{user.id}>\n:gem: Amount: ``{gems_formatted}``")
+                embed.set_footer(text="Sharing is caring! ❤️")
+                embed.add_field(name="📬 Transaction Details",
+                                value=f"📤 **Sender:** <@{interaction.user.id}>\n"
+                                      f"📥 **Receiver:** <@{user.id}>\n"
+                                      f"💎 **Amount:** `{gems_formatted}`")
 
                 # Send the embed to the user
                 await interaction.response.send_message(embed=embed)
@@ -900,28 +929,28 @@ async def tip(interaction: discord.Interaction, amount: str, user: discord.Membe
                     print(f"Channel with ID {channel_id} not found!")
 
             else:
-                embed = discord.Embed(title=":x: Error",
-                                      description="You Are Too Poor For This Tip XD!",
+                embed = discord.Embed(title="🚫 Insufficient Funds",
+                                      description="You don't have enough gems to send this tip. Time to gamble more! 🎰",
                                       color=0xff0000)
                 embed.set_author(name="Pet Sim 99 Gamble Bot",
                                  icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-                embed.set_footer(text="/tip")
+                embed.set_footer(text="Better luck next time! 🍀")
                 await interaction.response.send_message(embed=embed)
         else:
-            embed = discord.Embed(title=":x: Error",
-                                  description="The User You Are Trying To Send Gems To Isn't Registered!",
+            embed = discord.Embed(title="🚫 User Not Registered",
+                                  description="The user you're trying to tip is not registered yet. They need to use `/register` first! 🚀",
                                   color=0xff0000)
             embed.set_author(name="Pet Sim 99 Gamble Bot",
                              icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-            embed.set_footer(text="/tip")
+            embed.set_footer(text="Let's get them in the game! 🎮")
             await interaction.response.send_message(embed=embed)
     else:
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to send tips. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="/tip")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
 
 
@@ -966,38 +995,38 @@ class RainButtons(discord.ui.View) :
                                                 message=self.message, starter=self.starter,emoji=self.emoji))
 
 
-@bot.tree.command(name="rain", description="Join A Game Of Rock Paper Scissors (PVP)")
+@bot.tree.command(name="rain", description="🌧️ Make it rain gems on the server!")
 async def createrain(interaction: discord.Interaction, amount: str, duration: int) :
     amount = suffix_to_int(amount)
     uid = str(interaction.user.id)
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to start a rain. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="rains")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if amount < 5000 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Minimum Rain Amount Is 5k",
+        embed = discord.Embed(title="🚫 Invalid Amount",
+                              description="The minimum rain amount is 5,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="rains")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     if amount > get_gems(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Too Poor XD",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to start this rain. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="rains")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     channel = bot.get_channel(int(Config['Rains']['Channel']))
@@ -1008,19 +1037,22 @@ async def createrain(interaction: discord.Interaction, amount: str, duration: in
         joined = 1
     subtract_gems(uid, amount)
     emoji = "🌧️"
-    embed = discord.Embed(title=f"{emoji} Rain In Progress",
-                          description=f"A Rain Has Been Started By <@{interaction.user.id}>",
+    embed = discord.Embed(title=f"{emoji} Gem Rain in Progress!",
+                          description=f"A generous rain has been started by <@{interaction.user.id}>! 💎",
                           color=0x2ea4ff)
     embed.set_author(name="Pet Sim 99 Gamble Bot",
                      icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-    embed.set_footer(text="rains")
-    embed.add_field(name="Details",
-                    value=f":gem: **Amount:** ``{add_suffix(amount)}``\n:money_mouth: **Entries:** ``{0}``\n:gem: **Gems Per Person:** ``{add_suffix(amount / joined)}``\n:clock1: **Ends:** <t:{round(time.time() + duration)}:R>")
+    embed.set_footer(text="Join fast to get your share! 💨")
+    embed.add_field(name="🌧️ Rain Details",
+                    value=f"💰 **Total Amount:** `{add_suffix(amount)}`\n"
+                          f"👥 **Entries:** `0`\n"
+                          f"💸 **Gems Per Person:** `{add_suffix(amount / joined)}`\n"
+                          f"⏳ **Ends:** <t:{round(time.time() + duration)}:R>")
     message = await channel.send(content=".")
     await message.edit(embed=embed,
                        view=RainButtons(amount=amount, entries=rain, ends=f"<t:{round(time.time() + duration)}:R>",
                                         message=message, starter=uid,emoji=emoji))
-    await interaction.response.send_message(content=f"<#{Config['Rains']['Channel']}>")
+    await interaction.response.send_message(content=f"🌧️ A gem rain has started in <#{Config['Rains']['Channel']}>!")
     await asyncio.sleep(duration)
     if len(rain) == 0:
         gpp = amount
@@ -1028,14 +1060,17 @@ async def createrain(interaction: discord.Interaction, amount: str, duration: in
         gpp = amount / len(rain)
     for person in rain:
         add_gems(person, gpp)
-    embed = discord.Embed(title=":sunny: Rain Ended",
-                          description=f"A Rain Has Been Started By <@{interaction.user.id}> (ended)",
+    embed = discord.Embed(title="☀️ The Rain Has Ended!",
+                          description=f"The gem rain started by <@{interaction.user.id}> has concluded. 💧",
                           color=0xffe74d)
     embed.set_author(name="Pet Sim 99 Gamble Bot",
                      icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-    embed.set_footer(text="rains")
-    embed.add_field(name="Details",
-                    value=f":gem: **Amount:** ``{add_suffix(amount)}``\n:money_mouth: **Entries:** ``{len(rain)}``\n:gem: **Gems Per Person:** ``{add_suffix(gpp)}``\n:clock1: **Ended:** <t:{round(time.time())}:R>")
+    embed.set_footer(text="Stay tuned for the next one! 👀")
+    embed.add_field(name="📝 Final Details",
+                    value=f"💰 **Total Amount:** `{add_suffix(amount)}`\n"
+                          f"👥 **Entries:** `{len(rain)}`\n"
+                          f"💸 **Gems Per Person:** `{add_suffix(gpp)}`\n"
+                          f"⌛ **Ended:** <t:{round(time.time())}:R>")
     await message.edit(embed=embed, view=None)
 
 
@@ -1125,49 +1160,49 @@ class MinesButtons(discord.ui.View) :
             await interaction.response.defer()
 
 
-@bot.tree.command(name="mines", description="Start A Game Of Mines")
+@bot.tree.command(name="mines", description="💣 Test your luck in a game of mines!")
 async def mines(interaction: discord.Interaction, bet: str, bombs: int) :
     valid = True
     uid = str(interaction.user.id)
     bet = suffix_to_int(bet)
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to play mines. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if bet <= 999 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Minimum Bet Is 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for mines is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     if bet > get_gems(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Too Poor XD",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to place this bet. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if bombs >= 25 or bombs <= 0 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Invalid Number Of Mines",
+        embed = discord.Embed(title="🚫 Invalid Number of Mines",
+                              description="Please choose a number of mines between 1 and 24. 💣",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Choose wisely! 🤔")
         await interaction.response.send_message(embed=embed)
         return
     if valid :
@@ -1183,9 +1218,9 @@ async def mines(interaction: discord.Interaction, bet: str, bombs: int) :
             ["", "", "", "", ""],
         ]
         coollooking = '\n'.join([' '.join(sublist) for sublist in board])
-        await log(f"{interaction.user.name} Started A Mines Game! Board:\n\n{coollooking}")
+        await log(f"💣 {interaction.user.name} started a mines game! Board:\n\n{coollooking}")
         await interaction.response.send_message(
-            content=f":moneybag: **Winnings:** ``{add_suffix(bet * 0.95)}`` :star: **Multiplier:** ``0.95``",
+            content=f"💰 **Winnings:** `{add_suffix(bet * 0.95)}` |  multiplier: `0.95x`",
             view=MinesButtons(bet=bet, board=board, bombs=bombs, interaction=interaction, usersafes=0,
                               userboard=userboard, exploded=False))
 
@@ -1369,8 +1404,8 @@ class KenoSelectButtons(discord.ui.View) :
                                                                                difficulty=self.difficulty))
 
 
-@bot.tree.command(name="keno", description="Start A Game Of Keno (omg (wowzerz) (:star_struck:)))")
-@app_commands.describe(difficulty="Easy or Hard")
+@bot.tree.command(name="keno", description="🎉 Play a thrilling game of Keno!")
+@app_commands.describe(difficulty="Choose your difficulty: Easy or Hard")
 async def keno(interaction: discord.Interaction, bet: str, difficulty: str) :
     valid = True
     uid = str(interaction.user.id)
@@ -1378,47 +1413,47 @@ async def keno(interaction: discord.Interaction, bet: str, difficulty: str) :
     valid_difficulties = ["Easy", "Hard"]
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to play Keno. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if not difficulty in valid_difficulties :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Difficulty Can Only Be: Easy or Hard",
+        embed = discord.Embed(title="🚫 Invalid Difficulty",
+                              description="Please choose a valid difficulty: `Easy` or `Hard`. 🤔",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Choose your challenge! 💪")
         await interaction.response.send_message(embed=embed)
         return
     if bet <= 999 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Minimum Bet Is 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for Keno is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     if bet > get_gems(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Too Poor XD",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to place this bet. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if valid :
         await interaction.response.send_message(
-            content=f":white_check_mark: **Please Select Your Tiles (Max: 6)** (Bet: {add_suffix(bet)})",
+            content=f"✅ **Select Your Tiles (Max: 6)** | **Bet:** `{add_suffix(bet)}`",
             view=KenoSelectButtons(bet=bet, board=base_keno_board(23), interaction=interaction, difficulty=difficulty))
 
 
@@ -1497,47 +1532,47 @@ class TowersButtons(discord.ui.View) :
                 self.layer = self.layer + 1
 
 
-@bot.tree.command(name="towers", description="Start A Game Of Towers")
+@bot.tree.command(name="towers", description="🗼 Climb the towers and multiply your bet!")
 async def towers(interaction: discord.Interaction, bet: str) :
     valid = True
     uid = str(interaction.user.id)
     bet = suffix_to_int(bet)
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to play towers. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if bet <= 999 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Minimum Bet Is 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for towers is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     if bet > get_gems(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Too Poor XD",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to place this bet. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if valid :
         subtract_gems(uid, bet)
         af = get_affiliate(str(interaction.user.id))
         add_gems(af, bet * 0.01)
-        await log(f"<@{uid}> Bet {add_suffix(bet)}> On Towers")
-        await interaction.response.send_message(content=f"", view=TowersButtons(bet=bet, interaction=interaction))
+        await log(f"🗼 <@{uid}> bet {add_suffix(bet)} on towers!")
+        await interaction.response.send_message(content="🗼 **Welcome to Towers!**\nClick the buttons to climb and multiply your bet. But be careful, one wrong move and you lose it all! 💥", view=TowersButtons(bet=bet, interaction=interaction))
 
 
 class FlipButtons(discord.ui.View) :
@@ -1563,12 +1598,12 @@ class FlipButtons(discord.ui.View) :
     async def join_clicked(self, interaction: discord.Interaction) :
         uid = str(interaction.user.id)
         if get_gems(uid) < self.bet :
-            await interaction.response.send_message(content="You cant afford this pooron", ephemeral=True)
+            await interaction.response.send_message(content="🚫 You can't afford this, you poor soul!", ephemeral=True)
             return
         if uid == self.user :
-            await interaction.response.send_message(content="NAHH BRO U CANT JOIN UR OWN FLIP :skull:", ephemeral=True)
+            await interaction.response.send_message(content="🤦‍♂️ Nah, bro, you can't join your own flip! :skull:", ephemeral=True)
             return
-        await interaction.response.send_message(content="Joined the game you stinky", ephemeral=True)
+        await interaction.response.send_message(content="🎉 You've joined the game, you absolute legend!", ephemeral=True)
         for button in self.buttons :
             button.disabled = True
         subtract_gems(uid, self.bet)
@@ -1597,7 +1632,7 @@ class FlipButtons(discord.ui.View) :
 
     async def bot(self, interaction: discord.Interaction) :
         uid = str(bot.user.id)
-        await interaction.response.send_message(content="Joined the game you stinky", ephemeral=True)
+        await interaction.response.send_message(content="🎉 You've joined the game, you absolute legend!", ephemeral=True)
         for button in self.buttons :
             button.disabled = True
         subtract_gems(uid, self.bet)
@@ -1632,39 +1667,39 @@ class FlipButtons(discord.ui.View) :
         await self.msg.edit(embed=embed)
 
 
-@bot.tree.command(name="flip", description="1v1 Coinflip (:scream:)")
+@bot.tree.command(name="flip", description="🪙 Challenge another user to a coinflip!")
 async def flip(interaction: discord.Interaction, bet: str, side: CoinSide) :
     valid = True
     uid = str(interaction.user.id)
     bet = suffix_to_int(bet)
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to start a coinflip. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if bet <= 999 :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Minimum Bet Is 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for a coinflip is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     if bet > get_gems(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="Too Poor XD",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to place this bet. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="games")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if valid :
@@ -1672,15 +1707,17 @@ async def flip(interaction: discord.Interaction, bet: str, side: CoinSide) :
         af = get_affiliate(str(interaction.user.id))
         add_gems(af, bet * 0.01)
         channel = bot.get_channel(int(Config['Coinflip']['1v1']))
-        embed = discord.Embed(title="Coinflip", description=f"<@{uid}> Started A Coinflip", color=0xffc800)
+        embed = discord.Embed(title="🪙 Coinflip Challenge!",
+                              description=f"<@{uid}> has started a coinflip for **{add_suffix(bet)}** gems! 💎",
+                              color=0xffc800)
         if side.value == "Heads" :
-            embed.add_field(name="Flip", value=f":coin: **{side.value}:** <@{uid}>\n:coin: **Tails:** ``???``")
+            embed.add_field(name="Sides", value=f"**{side.value}:** <@{uid}>\n**Tails:** `Waiting for opponent...`")
         if side.value == "Tails" :
-            embed.add_field(name="Flip", value=f":coin: **{side.value}:** <@{uid}>\n:coin: **Heads:** ``???``")
-        embed.add_field(name="Bet", value=f":gem: **Amount:** ``{add_suffix(bet)}``")
+            embed.add_field(name="Sides", value=f"**{side.value}:** <@{uid}>\n**Heads:** `Waiting for opponent...`")
+        embed.add_field(name="Bet", value=f"💰 **Amount:** `{add_suffix(bet)}`")
         msg = await channel.send(embed=embed)
         await msg.edit(embed=embed, view=FlipButtons(msg, bet, side.value, uid))
-        await interaction.response.send_message(content=f"<#{Config['Coinflip']['1v1']}>")
+        await interaction.response.send_message(content=f"🪙 Your coinflip has been created in <#{Config['Coinflip']['1v1']}>!")
 def open_case(Case):
     casesdata = get_cases()
     casedata = {}
@@ -1695,39 +1732,43 @@ def open_case(Case):
     if choice == None:
         choice = casedata['Drops'][0]
     return choice
-@bot.tree.command(name="cases", description="View All Cases")
+@bot.tree.command(name="cases", description="📦 View all available cases to unbox!")
 async def cases(interaction: discord.Interaction):
     uid = str(interaction.user.id)
     if not is_registered(uid) :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to view cases. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
-    embed = discord.Embed(title="Cases", description="Viewing a list of all cases currently in the bot.",
+    embed = discord.Embed(title="📦 Available Cases",
+                          description="Here's a list of all the cases you can unbox:",
                           color=0x2abccf)
     embed.set_author(name="Pet Sim 99 Gamble Bot",
                      icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
     for case in get_cases():
         infostr = ""
         for pet in case['Drops']:
-            infostr += f"- {pet['Name']} ({pet['Chance']}%) - ``{add_suffix(pet['Worth'])}``\n"
-        embed.add_field(name=f"{case['Name']}", value=f":gem: **Price:** ``{add_suffix(case['Price'])}``\n:four_leaf_clover: **Drops:**\n{infostr}", inline=False)
-        embed.set_footer(text="cases")
+            infostr += f"- {pet['Name']} ({pet['Chance']}%) - `{add_suffix(pet['Worth'])}`\n"
+        embed.add_field(name=f"**{case['Name']}**",
+                        value=f"💰 **Price:** `{add_suffix(case['Price'])}`\n"
+                              f"🍀 **Drops:**\n{infostr}",
+                        inline=False)
+    embed.set_footer(text="Good luck with your unboxing! 🎉")
     await interaction.response.send_message(embed=embed)
-@bot.tree.command(name="unbox-case", description="Open a Case")
+@bot.tree.command(name="unbox-case", description="🎁 Open a case for a chance to win big!")
 async def unbox_case(interaction: discord.Interaction, case_name: str):
     uid = str(interaction.user.id)
     if not is_registered(uid) :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to unbox cases. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     casedata = None
@@ -1736,26 +1777,28 @@ async def unbox_case(interaction: discord.Interaction, case_name: str):
             casedata = caseD
             break
     if not casedata:
-        embed = discord.Embed(title=":x: Error",
-                              description="Invalid Case! Do /cases For A List Of All Cases",
+        embed = discord.Embed(title="🚫 Invalid Case",
+                              description="That case doesn't exist! Use `/cases` to see a list of all available cases. 🤔",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Choose wisely! 🧐")
         await interaction.response.send_message(embed=embed)
         return
     if get_gems(uid) < casedata['Price']:
-        embed = discord.Embed(title=":x: Error",
-                              description="You Cannot Afford This Case",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to open this case. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     outcome = open_case(case_name)
     subtract_gems(uid, casedata['Price'])
-    embed = discord.Embed(title="Opening Case", description=f"Opening {case_name} <t:{round(time.time()+5)}:R>")
+    embed = discord.Embed(title=f"🎁 Opening {case_name}...",
+                          description=f"The case will be unboxed <t:{round(time.time()+5)}:R>!",
+                          color=0x2abccf)
     embed.set_thumbnail(url=casedata['Icon'])
     await interaction.response.send_message(embed=embed)
     await asyncio.sleep(5)
@@ -1763,24 +1806,34 @@ async def unbox_case(interaction: discord.Interaction, case_name: str):
     add_gems(uid, outcome['Worth'])
     add_bet(uid,casedata['Price'],outcome['Worth'])
     if casedata['Price'] <= outcome['Worth']:
-        embed = discord.Embed(title="Opened Case", description=f"You Unboxed A {outcome['Name']}!",color=0x82ff80)
-        embed.add_field(name="Winnings",value=f":gem: **Case Price**: ``{add_suffix(casedata['Price'])}``\n:gem: **{outcome['Name']} Price**: ``{add_suffix(outcome['Worth'])}``\n:gem: **Profit**: ``{add_suffix(outcome['Worth']-casedata['Price'])}``")
+        embed = discord.Embed(title="🎉 You Won!",
+                              description=f"You unboxed a **{outcome['Name']}**!",
+                              color=0x82ff80)
+        embed.add_field(name="💸 Winnings",
+                        value=f"💰 **Case Price:** `{add_suffix(casedata['Price'])}`\n"
+                              f"💎 **{outcome['Name']} Price:** `{add_suffix(outcome['Worth'])}`\n"
+                              f"📈 **Profit:** `{add_suffix(outcome['Worth']-casedata['Price'])}`")
         embed.set_thumbnail(url=outcome['Icon'])
     else:
-        embed = discord.Embed(title="Opened Case", description=f"You Unboxed A {outcome['Name']}!", color=0xff7575)
-        embed.add_field(name="Winnings", value=f":gem: **Case Price**: ``{add_suffix(casedata['Price'])}``\n:gem: **{outcome['Name']} Price**: ``{add_suffix(outcome['Worth'])}``\n:gem: **Profit**: ``-{add_suffix(casedata['Price'] - outcome['Worth'])}``")
+        embed = discord.Embed(title="💔 You Lost...",
+                              description=f"You unboxed a **{outcome['Name']}**.",
+                              color=0xff7575)
+        embed.add_field(name="💸 Winnings",
+                        value=f"💰 **Case Price:** `{add_suffix(casedata['Price'])}`\n"
+                              f"💎 **{outcome['Name']} Price:** `{add_suffix(outcome['Worth'])}`\n"
+                              f"📉 **Loss:** `-{add_suffix(casedata['Price'] - outcome['Worth'])}`")
         embed.set_thumbnail(url=outcome['Icon'])
     await interaction.edit_original_response(embed=embed)
-@bot.tree.command(name="unbox-multiple-cases", description="Open a Case")
+@bot.tree.command(name="unbox-multiple-cases", description="🎁 Open multiple cases at once!")
 async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: int):
     uid = str(interaction.user.id)
     if not is_registered(uid) :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to unbox cases. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     casedata = None
@@ -1789,30 +1842,30 @@ async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: 
             casedata = caseD
             break
     if amount < 2 or amount > 10000:
-        embed = discord.Embed(title=":x: Error",
-                              description="Invalid Amount! Please Choose Between 2 and 10,000",
+        embed = discord.Embed(title="🚫 Invalid Amount",
+                              description="Please choose an amount between 2 and 10,000 cases to unbox. 📦",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Choose wisely! 🤔")
         await interaction.response.send_message(embed=embed)
         return
     if not casedata:
-        embed = discord.Embed(title=":x: Error",
-                              description="Invalid Case! Do /cases For A List Of All Cases",
+        embed = discord.Embed(title="🚫 Invalid Case",
+                              description="That case doesn't exist! Use `/cases` to see a list of all available cases. 🤔",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Choose wisely! 🧐")
         await interaction.response.send_message(embed=embed)
         return
     if get_gems(uid) < casedata['Price'] * amount:
-        embed = discord.Embed(title=":x: Error",
-                              description="You Cannot Afford This Much Cases",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems to open this many cases. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if amount <= 30:
@@ -1821,7 +1874,9 @@ async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: 
             outcomes.append(open_case(case_name))
 
         subtract_gems(uid, casedata['Price'] * amount)
-        embed = discord.Embed(title=f"Opening {amount}x Cases", description=f"Opening {case_name} <t:{round(time.time()+5)}:R>")
+        embed = discord.Embed(title=f"🎁 Opening {amount}x {case_name}s...",
+                              description=f"The cases will be unboxed <t:{round(time.time()+5)}:R>!",
+                              color=0x2abccf)
         embed.set_thumbnail(url=casedata['Icon'])
         await interaction.response.send_message(embed=embed)
         await asyncio.sleep(5)
@@ -1838,24 +1893,40 @@ async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: 
             time.sleep(0.1)
 
         if totalwinnings >= totalcost:
-            embed = discord.Embed(title="Opened Cases", description=f"You Opened {amount} {case_name}s",color=0x82ff80)
+            embed = discord.Embed(title="🎉 You Won!",
+                                  description=f"You unboxed {amount} {case_name}s and made a profit!",
+                                  color=0x82ff80)
             petsstr = ""
             for pet in outcomes:
-                petsstr += f"- **{pet['Name']}** - ``{add_suffix(pet['Worth'])}``\n"
-            embed.add_field(name="Pets", value=petsstr)
-            embed.add_field(name="Best Pet",
-                            value=f":dog: **Pet:** ``{bestpet['Name']}``\n:gem: **Worth:** ``{add_suffix(bestpet['Worth'])}``\n:four_leaf_clover: **Chance:** ``{bestpet['Chance']}%``")
-            embed.add_field(name="Winnings",value=f":gem: **Total Price**: ``{add_suffix(casedata['Price'] * amount)}``\n:gem: **Total Winnings**: ``{add_suffix(totalwinnings)}``\n:gem: **Profit**: ``{add_suffix(totalwinnings-totalcost)}``", inline=False)
+                petsstr += f"- **{pet['Name']}** - `{add_suffix(pet['Worth'])}`\n"
+            embed.add_field(name="🐾 Pets Unboxed", value=petsstr)
+            embed.add_field(name="🌟 Best Pet",
+                            value=f"**Pet:** `{bestpet['Name']}`\n"
+                                  f"**Worth:** `{add_suffix(bestpet['Worth'])}`\n"
+                                  f"**Chance:** `{bestpet['Chance']}%`")
+            embed.add_field(name="💸 Winnings",
+                            value=f"**Total Price:** `{add_suffix(casedata['Price'] * amount)}`\n"
+                                  f"**Total Winnings:** `{add_suffix(totalwinnings)}`\n"
+                                  f"**Profit:** `{add_suffix(totalwinnings-totalcost)}`",
+                            inline=False)
             embed.set_thumbnail(url=bestpet['Icon'])
         else:
-            embed = discord.Embed(title="Opened Cases", description=f"You Opened {amount} {case_name}s", color=0xff7575)
+            embed = discord.Embed(title="💔 You Lost...",
+                                  description=f"You unboxed {amount} {case_name}s and lost some gems.",
+                                  color=0xff7575)
             petsstr = ""
             for pet in outcomes :
-                petsstr += f"- **{pet['Name']}** - ``{add_suffix(pet['Worth'])}``\n"
-            embed.add_field(name="Pets", value=petsstr)
-            embed.add_field(name="Best Pet", value=f":dog: **Pet:** ``{bestpet['Name']}``\n:gem: **Worth:** ``{add_suffix(bestpet['Worth'])}``\n:four_leaf_clover: **Chance:** ``{bestpet['Chance']}%``")
-            embed.add_field(name="Winnings",
-                            value=f":gem: **Total Price**: ``{add_suffix(casedata['Price'] * amount)}``\n:gem: **Total Winnings**: ``{add_suffix(totalwinnings)}``\n:gem: **Profit**: ``-{add_suffix(totalcost - totalwinnings)}``", inline=False)
+                petsstr += f"- **{pet['Name']}** - `{add_suffix(pet['Worth'])}`\n"
+            embed.add_field(name="🐾 Pets Unboxed", value=petsstr)
+            embed.add_field(name="🌟 Best Pet",
+                            value=f"**Pet:** `{bestpet['Name']}`\n"
+                                  f"**Worth:** `{add_suffix(bestpet['Worth'])}`\n"
+                                  f"**Chance:** `{bestpet['Chance']}%`")
+            embed.add_field(name="💸 Winnings",
+                            value=f"**Total Price:** `{add_suffix(casedata['Price'] * amount)}`\n"
+                                  f"**Total Winnings:** `{add_suffix(totalwinnings)}`\n"
+                                  f"**Loss:** `-{add_suffix(totalcost - totalwinnings)}`",
+                            inline=False)
             embed.set_thumbnail(url=bestpet['Icon'])
         await interaction.edit_original_response(embed=embed)
     else:
@@ -1864,8 +1935,9 @@ async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: 
             outcomes.append(open_case(case_name))
 
         subtract_gems(uid, casedata['Price'] * amount)
-        embed = discord.Embed(title=f"Opening {amount}x Cases",
-                              description=f"Opening {case_name} <t:{round(time.time() + 5)}:R>")
+        embed = discord.Embed(title=f"🎁 Opening {amount}x {case_name}s...",
+                              description=f"The cases will be unboxed <t:{round(time.time() + 5)}:R>!",
+                              color=0x2abccf)
         embed.set_thumbnail(url=casedata['Icon'])
         await interaction.response.send_message(embed=embed)
         await asyncio.sleep(5)
@@ -1878,22 +1950,26 @@ async def unbox_cases(interaction: discord.Interaction, case_name: str, amount: 
         add_gems(uid,totalwinnings)
         add_bet(uid, totalcost, totalwinnings)
         if totalwinnings >= totalcost :
-            embed = discord.Embed(title="Opened Cases", description=f"You Opened {amount} {case_name}s", color=0x82ff80)
-            petsstr = ""
-            for pet in outcomes :
-                petsstr += f"- **{pet['Name']}** - ``{add_suffix(pet['Worth'])}``\n"
-            embed.add_field(name="Pets", value="Open Less Than 30 Cases To See The Pets You Got")
-            embed.add_field(name="Winnings",
-                            value=f":gem: **Total Price**: ``{add_suffix(casedata['Price'] * amount)}``\n:gem: **Total Winnings**: ``{add_suffix(totalwinnings)}``\n:gem: **Profit**: ``{add_suffix(totalwinnings - totalcost)}``",
+            embed = discord.Embed(title="🎉 You Won!",
+                                  description=f"You unboxed {amount} {case_name}s and made a profit!",
+                                  color=0x82ff80)
+            embed.add_field(name="🐾 Pets Unboxed",
+                            value="You unboxed too many cases to show them all, but you came out on top!")
+            embed.add_field(name="💸 Winnings",
+                            value=f"**Total Price:** `{add_suffix(casedata['Price'] * amount)}`\n"
+                                  f"**Total Winnings:** `{add_suffix(totalwinnings)}`\n"
+                                  f"**Profit:** `{add_suffix(totalwinnings - totalcost)}`",
                             inline=False)
         else :
-            embed = discord.Embed(title="Opened Cases", description=f"You Opened {amount} {case_name}s", color=0xff7575)
-            petsstr = ""
-            for pet in outcomes :
-                petsstr += f"- **{pet['Name']}** - ``{add_suffix(pet['Worth'])}``\n"
-            embed.add_field(name="Pets", value="Open Less Than 30 Cases To See The Pets You Got")
-            embed.add_field(name="Winnings",
-                            value=f":gem: **Total Price**: ``{add_suffix(casedata['Price'] * amount)}``\n:gem: **Total Winnings**: ``{add_suffix(totalwinnings)}``\n:gem: **Profit**: ``-{add_suffix(totalcost - totalwinnings)}``",
+            embed = discord.Embed(title="💔 You Lost...",
+                                  description=f"You unboxed {amount} {case_name}s and lost some gems.",
+                                  color=0xff7575)
+            embed.add_field(name="🐾 Pets Unboxed",
+                            value="You unboxed too many cases to show them all, and unfortunately, you lost some gems.")
+            embed.add_field(name="💸 Winnings",
+                            value=f"**Total Price:** `{add_suffix(casedata['Price'] * amount)}`\n"
+                                  f"**Total Winnings:** `{add_suffix(totalwinnings)}`\n"
+                                  f"**Loss:** `-{add_suffix(totalcost - totalwinnings)}`",
                             inline=False)
         await interaction.edit_original_response(embed=embed)
 class UpgradeButton(discord.ui.View) :
@@ -1938,84 +2014,90 @@ green = 0x4dff58
 red = 0xff6b6b
 yellow = 0xfff93d
 
-@bot.tree.command(name="upgrader", description="Put Some Gems In The Upgrade Machine!")
+@bot.tree.command(name="upgrader", description="⬆️ Upgrade your gems for a chance at huge multipliers!")
 async def upgrade(interaction: discord.Interaction, bet: str, multiplier: float):
     valid = True
     bet = suffix_to_int(bet)
     uid = str(interaction.user.id)
     if not is_registered(uid) :
         valid = False
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to use the upgrader. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if multiplier < 1.5:
-        embed = discord.Embed(title=":x: Error",
-                              description="Invalid Multiplier! Cannot be under 1.5",
+        embed = discord.Embed(title="🚫 Invalid Multiplier",
+                              description="The minimum multiplier for the upgrader is 1.5. Please enter a higher value. 📈",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Higher risk, higher reward! 🤑")
         await interaction.response.send_message(embed=embed)
         return
     if get_gems(uid) < bet:
-        embed = discord.Embed(title=":x: Error",
-                              description="You Cannot Afford This Bet",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems for this upgrade. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if bet < 999:
-        embed = discord.Embed(title=":x: Error",
-                              description="Cannot bet under 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for the upgrader is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
-    embed = discord.Embed(title="Upgrade Machine", description="Have a chance at upgrading your bet or losing everything!",color=0x4dbbff)
+    embed = discord.Embed(title="⬆️ Gem Upgrader",
+                          description="Will you succeed and multiply your gems, or will you lose it all? 🤔",
+                          color=0x4dbbff)
     win_chance = multiplier_to_percentage(multiplier,Config['Upgrader']['House'])
     winnings = round(bet*multiplier)
-    embed.add_field(name="Input",value=f":gem: **Bet:** ``{add_suffix(bet)}``\n:four_leaf_clover: **Chance:** ``{round(win_chance, 1)}%``\n:star: **Multiplier:** ``{multiplier}x``\n:moneybag: **Winnings:** ``{add_suffix(winnings)}``")
+    embed.add_field(name="📊 Upgrade Details",
+                    value=f"💎 **Bet:** `{add_suffix(bet)}`\n"
+                          f"🍀 **Chance:** `{round(win_chance, 1)}%`\n"
+                          f"✨ **Multiplier:** `{multiplier}x`\n"
+                          f"💰 **Potential Winnings:** `{add_suffix(winnings)}`")
     await interaction.response.send_message(embed=embed,view=UpgradeButton(interaction,bet,win_chance,multiplier))
 def roll_dice():
     return random.randint(1, 6)
-@bot.tree.command(name="dice", description="Roll A Dice Against The Bot")
+@bot.tree.command(name="dice", description="🎲 Roll a dice against the bot and test your luck!")
 async def dice(interaction: discord.Interaction, bet: str):
     bet = suffix_to_int(bet)
     uid = str(interaction.user.id)
     if not is_registered(uid) :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Are Not Registered!",
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to play dice. Use `/register` to get started! 🚀",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Let's get you in the game! 🎮")
         await interaction.response.send_message(embed=embed)
         return
     if get_gems(uid) < bet :
-        embed = discord.Embed(title=":x: Error",
-                              description="You Cannot Afford This Bet",
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems for this bet. Time to gamble more! 🎰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="Better luck next time! 🍀")
         await interaction.response.send_message(embed=embed)
         return
     if bet < 999 :
-        embed = discord.Embed(title=":x: Error",
-                              description="Cannot bet under 1k",
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for dice is 1,000 gems. Please enter a larger amount. 💰",
                               color=0xff0000)
         embed.set_author(name="Pet Sim 99 Gamble Bot",
                          icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
-        embed.set_footer(text="cases")
+        embed.set_footer(text="More gems, more fun! 🎉")
         await interaction.response.send_message(embed=embed)
         return
     yourdie = roll_dice()
@@ -2024,26 +2106,37 @@ async def dice(interaction: discord.Interaction, bet: str):
     winnings = 0
     if yourdie > botdie:
         winnings = round((bet*2)/1.02)
-        embed = discord.Embed(title="You Rolled A Dice!", description="You Rolled Higher Than The Bot. You Win!", color=green)
-        embed.add_field(name="Game",value=f"🎲 **You Rolled:** ``{yourdie}``\n🎲 **Bot Rolled:** ``{botdie}``\n:gem: **Winnings:** ``{add_suffix(winnings)}``")
+        embed = discord.Embed(title="🎉 You Won!",
+                              description="You rolled higher than the bot and won the dice game! 🎲",
+                              color=green)
+        embed.add_field(name="📊 Game Results",
+                        value=f"**You Rolled:** `{yourdie}`\n"
+                              f"**Bot Rolled:** `{botdie}`\n"
+                              f"**Winnings:** `{add_suffix(winnings)}` 💎")
     elif yourdie < botdie:
         winnings = 0
-        embed = discord.Embed(title="You Rolled A Dice!", description="You Rolled Lower Than The Bot. You Lose!",
+        embed = discord.Embed(title="💔 You Lost...",
+                              description="The bot rolled higher than you. Better luck next time! 🎲",
                               color=red)
-        embed.add_field(name="Game",
-                        value=f"🎲 **You Rolled:** ``{yourdie}``\n🎲 **Bot Rolled:** ``{botdie}``\n:gem: **Winnings:** ``{add_suffix(winnings)}``")
+        embed.add_field(name="📊 Game Results",
+                        value=f"**You Rolled:** `{yourdie}`\n"
+                              f"**Bot Rolled:** `{botdie}`\n"
+                              f"**Winnings:** `{add_suffix(winnings)}` 💎")
     else:
         winnings = bet
-        embed = discord.Embed(title="You Rolled A Dice!", description="Its A Tie!",
+        embed = discord.Embed(title="🤝 It's a Tie!",
+                              description="You and the bot rolled the same number. Your bet has been returned. 🎲",
                               color=yellow)
-        embed.add_field(name="Game",
-                        value=f"🎲 **You Rolled:** ``{yourdie}``\n🎲 **Bot Rolled:** ``{botdie}``\n:gem: **Winnings:** ``{add_suffix(winnings)}``")
+        embed.add_field(name="📊 Game Results",
+                        value=f"**You Rolled:** `{yourdie}`\n"
+                              f"**Bot Rolled:** `{botdie}`\n"
+                              f"**Winnings:** `{add_suffix(winnings)}` 💎")
     add_gems(uid, winnings)
     await interaction.response.send_message(embed=embed)
 
 allowed_user_ids = Config["AdminCommands"]["UserID"]
 
-@bot.tree.command(name="setbal", description="Restricted to specific users")
+@bot.tree.command(name="setbal", description="🔒 Set a user's balance (Admin Only)")
 async def setgems(interaction: discord.Interaction, user: discord.Member, gems: str):
     gems = suffix_to_int(gems)
     uid = str(user.id)
@@ -2053,8 +2146,8 @@ async def setgems(interaction: discord.Interaction, user: discord.Member, gems: 
 
         allowed_users = ", ".join(f"<@{user_id}>" for user_id in allowed_user_ids)
         embed = discord.Embed(
-            title=":x: Error",
-            description=f"You do not have permission to use this command. Only the following users are allowed: {allowed_users}",
+            title="🚫 Access Denied",
+            description=f"You do not have permission to use this command. This is an admin-only command. 🔒",
             color=0xff0000
         )
         await interaction.response.send_message(embed=embed)
@@ -2062,10 +2155,16 @@ async def setgems(interaction: discord.Interaction, user: discord.Member, gems: 
     
 
     set_gems(uid, gems)
-    await interaction.response.send_message(embed=succeed(f"**Gems:** {add_suffix(gems)}\n:inbox_tray: **Set Balance:**\n- **Receiver:** <@{uid}>\n- **Admin:** <@{interaction.user.id}>"))
+    embed = discord.Embed(
+        title="✅ Balance Set",
+        description=f"Successfully set the balance of <@{uid}> to **{add_suffix(gems)}** gems. 💎",
+        color=0x00ff00
+    )
+    embed.set_footer(text=f"Command executed by: {interaction.user.name}")
+    await interaction.response.send_message(embed=embed)
 allowed_user_ids = Config["AdminCommands"]["UserID"] 
 
-@bot.tree.command(name="addbal", description="Restricted to specific users")
+@bot.tree.command(name="addbal", description="🔒 Add gems to a user's balance (Admin Only)")
 async def addgems(interaction: discord.Interaction, user: discord.Member, gems: str):
     gems = suffix_to_int(gems)
     uid = str(user.id)
@@ -2075,8 +2174,8 @@ async def addgems(interaction: discord.Interaction, user: discord.Member, gems: 
 
         allowed_users = ", ".join(f"<@{user_id}>" for user_id in allowed_user_ids)
         embed = discord.Embed(
-            title=":x: Error",
-            description=f"You do not have permission to use this command. Only the following users are allowed: {allowed_users}",
+            title="🚫 Access Denied",
+            description=f"You do not have permission to use this command. This is an admin-only command. 🔒",
             color=0xff0000
         )
         await interaction.response.send_message(embed=embed)
@@ -2084,11 +2183,17 @@ async def addgems(interaction: discord.Interaction, user: discord.Member, gems: 
     
 
     add_gems(uid, gems)
-    await interaction.response.send_message(embed=succeed(f"**Gems:** {add_suffix(gems)}\n:inbox_tray: **Adding Gems:**\n- **Receiver:** <@{uid}>\n- **Admin:** <@{interaction.user.id}>"))
+    embed = discord.Embed(
+        title="✅ Gems Added",
+        description=f"Successfully added **{add_suffix(gems)}** gems to the balance of <@{uid}>. 💎",
+        color=0x00ff00
+    )
+    embed.set_footer(text=f"Command executed by: {interaction.user.name}")
+    await interaction.response.send_message(embed=embed)
 
 allowed_user_ids = Config["AdminCommands"]["UserID"]
 
-@bot.tree.command(name="removebal", description="Restricted to specific users")
+@bot.tree.command(name="removebal", description="🔒 Remove gems from a user's balance (Admin Only)")
 async def removegems(interaction: discord.Interaction, user: discord.Member, gems: str):
     gems = suffix_to_int(gems)
     uid = str(user.id)
@@ -2098,8 +2203,8 @@ async def removegems(interaction: discord.Interaction, user: discord.Member, gem
 
         allowed_users = ", ".join(f"<@{user_id}>" for user_id in allowed_user_ids)
         embed = discord.Embed(
-            title=":x: Error",
-            description=f"You do not have permission to use this command. Only the following users are allowed: {allowed_users}",
+            title="🚫 Access Denied",
+            description=f"You do not have permission to use this command. This is an admin-only command. 🔒",
             color=0xff0000
         )
         await interaction.response.send_message(embed=embed)
@@ -2107,7 +2212,13 @@ async def removegems(interaction: discord.Interaction, user: discord.Member, gem
     
 
     subtract_gems(uid, gems)
-    await interaction.response.send_message(embed=succeed(f"Removed {add_suffix(gems)} Gems From <@{uid}>"))
+    embed = discord.Embed(
+        title="✅ Gems Removed",
+        description=f"Successfully removed **{add_suffix(gems)}** gems from the balance of <@{uid}>. 💎",
+        color=0x00ff00
+    )
+    embed.set_footer(text=f"Command executed by: {interaction.user.name}")
+    await interaction.response.send_message(embed=embed)
 
 from multiprocessing import Process
 
