@@ -2069,6 +2069,78 @@ async def upgrade(interaction: discord.Interaction, bet: str, multiplier: float)
     await interaction.response.send_message(embed=embed,view=UpgradeButton(interaction,bet,win_chance,multiplier))
 def roll_dice():
     return random.randint(1, 6)
+@bot.tree.command(name="threedice", description="🎲 Bet on the sum of three dice!")
+async def threedice(interaction: discord.Interaction, bet: str, choice: str):
+    bet = suffix_to_int(bet)
+    uid = str(interaction.user.id)
+    if not is_registered(uid) :
+        embed = discord.Embed(title="🚫 Not Registered Yet?",
+                              description="You need to register to play three dice. Use `/register` to get started! 🚀",
+                              color=0xff0000)
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Let's get you in the game! 🎮")
+        await interaction.response.send_message(embed=embed)
+        return
+    if get_gems(uid) < bet :
+        embed = discord.Embed(title="🚫 Insufficient Funds",
+                              description="You don't have enough gems for this bet. Time to gamble more! 🎰",
+                              color=0xff0000)
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Better luck next time! 🍀")
+        await interaction.response.send_message(embed=embed)
+        return
+    if bet < 999 :
+        embed = discord.Embed(title="🚫 Invalid Bet",
+                              description="The minimum bet for three dice is 1,000 gems. Please enter a larger amount. 💰",
+                              color=0xff0000)
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="More gems, more fun! 🎉")
+        await interaction.response.send_message(embed=embed)
+        return
+    if choice.lower() not in ["4-10", "11-17"]:
+        embed = discord.Embed(title="🚫 Invalid Choice",
+                              description="Please choose either `4-10` or `11-17` for your bet. 🤔",
+                              color=0xff0000)
+        embed.set_author(name="Pet Sim 99 Gamble Bot",
+                         icon_url="https://creazilla-store.fra1.digitaloceanspaces.com/cliparts/7803751/diamond-gem-clipart-sm.png")
+        embed.set_footer(text="Choose wisely! 🧐")
+        await interaction.response.send_message(embed=embed)
+        return
+
+    dice1 = roll_dice()
+    dice2 = roll_dice()
+    dice3 = roll_dice()
+    total = dice1 + dice2 + dice3
+    subtract_gems(uid,bet)
+    winnings = 0
+
+    if total == 3 or total == 18:
+        winnings = 0
+        embed = discord.Embed(title="💔 House Wins!",
+                              description=f"The dice rolled **{total}**! The house takes this round. Better luck next time! 🎲",
+                              color=red)
+    elif (choice.lower() == "4-10" and 4 <= total <= 10) or \
+         (choice.lower() == "11-17" and 11 <= total <= 17):
+        winnings = bet * 2
+        embed = discord.Embed(title="🎉 You Won!",
+                              description=f"The dice rolled **{total}**! You guessed correctly and won **{add_suffix(winnings)}** gems! 💎",
+                              color=green)
+    else:
+        winnings = 0
+        embed = discord.Embed(title="💔 You Lost...",
+                              description=f"The dice rolled **{total}**. You guessed incorrectly. Better luck next time! 🎲",
+                              color=red)
+
+    embed.add_field(name="📊 Game Results",
+                    value=f"**Your Choice:** `{choice}`\n"
+                          f"**Dice Roll:** `{dice1}`, `{dice2}`, `{dice3}` (Total: **{total}**)\n"
+                          f"**Winnings:** `{add_suffix(winnings)}` 💎")
+    add_gems(uid, winnings)
+    await interaction.response.send_message(embed=embed)
+
 @bot.tree.command(name="dice", description="🎲 Roll a dice against the bot and test your luck!")
 async def dice(interaction: discord.Interaction, bet: str):
     bet = suffix_to_int(bet)
